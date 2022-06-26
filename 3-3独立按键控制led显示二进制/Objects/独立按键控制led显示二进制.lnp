@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj" 
+TO ".\Objects\独立按键控制led显示二进制" 
+PRINT(".\Listings\独立按键控制led显示二进制.m51")

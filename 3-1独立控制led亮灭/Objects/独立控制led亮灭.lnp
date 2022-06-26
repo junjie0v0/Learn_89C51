@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj" 
+TO ".\Objects\独立控制led亮灭" 
+PRINT(".\Listings\独立控制led亮灭.m51")
