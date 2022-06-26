@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj" 
+TO ".\Objects\动态数码管显示" 
+PRINT(".\Listings\动态数码管显示.m51")

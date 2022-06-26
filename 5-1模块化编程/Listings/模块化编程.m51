@@ -1,0 +1,170 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    06/25/2022  22:28:34  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+D:\KEIL\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\main.obj, .\Objects\A.obj TO .\Objects\模块化编程 PRINT (.\Lis
+>> tings\模块化编程.m51)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\main.obj (MAIN)
+  .\Objects\A.obj (A)
+  D:\KEIL\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\模块化编程 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     000AH     UNIT         ?DT?A
+            DATA    0012H     0002H     UNIT         _DATA_GROUP_
+            IDATA   0014H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     006DH     UNIT         ?PR?_DT?A
+            CODE    00FCH     0019H     UNIT         ?PR?_DELAY?A
+            CODE    0115H     000DH     UNIT         ?C_INITSEG
+            CODE    0122H     000BH     UNIT         ?PR?MAIN?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\模块化编程 (?C_STARTUP)
+
+
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN                  -----    -----
+  +--> ?PR?_DT?A
+
+?PR?_DT?A                      -----    -----
+  +--> ?PR?_DELAY?A
+
+?PR?_DELAY?A                   0012H    0002H
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\模块化编程 (?C_STARTUP)
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/25/2022  22:28:34  PAGE 2
+
+
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0003H         SEGMENT       ?C_C51STARTUP
+  I:0014H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0006H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0003H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:0003H         LINE#         133
+  C:0005H         LINE#         134
+  C:0006H         LINE#         135
+  C:0007H         LINE#         136
+  C:0009H         LINE#         185
+  C:000CH         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0122H         PUBLIC        main
+  -------         PROC          MAIN
+  C:0122H         LINE#         4
+  C:0122H         LINE#         5
+  C:0122H         LINE#         7
+  C:0122H         LINE#         8
+  C:0122H         LINE#         9
+  C:012BH         LINE#         10
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        A
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  B:00A0H.2       PUBLIC        P2_2
+  B:00A0H.3       PUBLIC        P2_3
+  B:00A0H.4       PUBLIC        P2_4
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  06/25/2022  22:28:34  PAGE 3
+
+
+  C:008FH         PUBLIC        _DT
+  D:0008H         PUBLIC        NixieTable
+  C:00FCH         PUBLIC        _Delay
+  -------         PROC          _DELAY
+  D:0006H         SYMBOL        xms
+  -------         DO            
+  D:0012H         SYMBOL        i
+  D:0013H         SYMBOL        j
+  -------         ENDDO         
+  C:00FCH         LINE#         4
+  C:00FCH         LINE#         5
+  C:00FCH         LINE#         6
+  C:0106H         LINE#         7
+  C:0106H         LINE#         10
+  C:0109H         LINE#         11
+  C:010CH         LINE#         13
+  C:010CH         LINE#         14
+  C:010FH         LINE#         15
+  C:0112H         LINE#         16
+  C:0114H         LINE#         17
+  -------         ENDPROC       _DELAY
+  -------         PROC          _DT
+  D:0007H         SYMBOL        location
+  D:0004H         SYMBOL        number
+  C:008FH         LINE#         21
+  C:008FH         LINE#         22
+  C:008FH         LINE#         23
+  C:00BCH         LINE#         24
+  C:00BCH         LINE#         25
+  C:00C0H         LINE#         26
+  C:00C4H         LINE#         27
+  C:00C8H         LINE#         28
+  C:00CCH         LINE#         29
+  C:00D4H         LINE#         30
+  C:00DCH         LINE#         31
+  C:00E4H         LINE#         32
+  C:00EAH         LINE#         33
+  C:00EAH         LINE#         34
+  C:00F1H         LINE#         35
+  C:00F8H         LINE#         36
+  C:00FBH         LINE#         37
+  -------         ENDPROC       _DT
+  -------         ENDMOD        A
+
+Program Size: data=21.0 xdata=0 code=301
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\A.obj" 
+TO ".\Objects\模块化编程" 
+PRINT(".\Listings\模块化编程.m51")

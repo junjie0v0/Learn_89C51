@@ -1,0 +1,78 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              06/25/2022 21:50:53 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.ls
+                    -t) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          
+   3          void Delay(unsigned int xms)
+   4          {
+   5   1              while(xms--)
+   6   1              {
+   7   2                      unsigned char i, j;
+   8   2      
+   9   2              i = 2;
+  10   2              j = 239;
+  11   2              do
+  12   2              {
+  13   3                      while (--j);
+  14   3              } while (--i);
+  15   2              }
+  16   1      }
+  17          
+  18          unsigned char NixieTable[]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+  19          
+  20          void DT(unsigned char location,number)
+  21          {
+  22   1                      switch (location)
+  23   1                      {
+  24   2                              case(1):P2_4=0;P2_3=0;P2_2=0;break;
+  25   2                              case(2):P2_4=0;P2_3=0;P2_2=1;break;
+  26   2                              case(3):P2_4=0;P2_3=1;P2_2=0;break;
+  27   2                              case(4):P2_4=0;P2_3=1;P2_2=1;break;
+  28   2                              case(5):P2_4=1;P2_3=0;P2_2=0;break;
+  29   2                              case(6):P2_4=1;P2_3=0;P2_2=1;break;
+  30   2                              case(7):P2_4=1;P2_3=1;P2_2=0;break;
+  31   2                              case(8):P2_4=1;P2_3=1;P2_2=1;break;
+  32   2                      }
+  33   1                      P0=NixieTable[number];
+  34   1                      Delay(1);
+  35   1                      P0=0x00;
+  36   1      }
+  37          
+  38          void main()
+  39          {
+  40   1              
+  41   1              while(1)
+  42   1              {
+  43   2                      DT(1,1);
+  44   2                      DT(2,2);
+  45   2                      DT(3,3);
+  46   2                      DT(4,4);
+  47   2                      DT(5,5);
+  48   2                      DT(6,6);
+  49   2                      DT(7,7);
+  50   2                      DT(8,8);
+  51   2              }
+  52   1      }
+
+
+C51 COMPILER V9.59.0.0   MAIN                                                              06/25/2022 21:50:53 PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    198    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
