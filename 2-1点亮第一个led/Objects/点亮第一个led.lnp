@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\led.obj" 
+TO ".\Objects\点亮第一个led" 
+PRINT(".\Listings\点亮第一个led.m51")
