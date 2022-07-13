@@ -1,0 +1,66 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              06/27/2022 22:50:16 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.ls
+                    -t) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include <INTRINS.H>
+   3          #include "A.H"
+   4          
+   5          unsigned char KeyNum,LEDMode;
+   6          
+   7          void main()
+   8          {
+   9   1              P2=0xfe;//初始化led灯；
+  10   1              Timer0Init();
+  11   1              while(1)
+  12   1              {
+  13   2                      KeyNum=Key();
+  14   2                      if(KeyNum)
+  15   2                      {
+  16   3                      if(KeyNum==1)//第一个按键被按下时；
+  17   3                              {
+  18   4                                      LEDMode++;
+  19   4                                      if(LEDMode>=2)
+  20   4                                              LEDMode=0;
+  21   4                              }
+  22   3                      }
+  23   2              }
+  24   1              
+  25   1              
+  26   1      }
+  27          
+  28          void Timer0_Routine() interrupt 1
+  29          {
+  30   1              static unsigned int T0Count;//设置全局静态变量防止丢失；
+  31   1              TL0 = 0x18;             //设置定时初值
+  32   1              TH0 = 0xFC;             //设置定时初值
+  33   1              T0Count++;              //每次溢出后记一次数；溢出时间为500ms；
+  34   1              if(T0Count==500)//溢出时间为500ms；
+  35   1              {
+  36   2                      T0Count=0;      //重新计数；
+  37   2                      if(LEDMode==0)                  //模式判断
+  38   2                              P2=_crol_(P2,1);        //LED输出
+  39   2                      if(LEDMode==1)
+  40   2                              P2=_cror_(P2,1);
+  41   2              }
+  42   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    132    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

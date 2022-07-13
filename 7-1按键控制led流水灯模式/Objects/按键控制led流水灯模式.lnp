@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\A.obj" 
+TO ".\Objects\按键控制led流水灯模式" 
+PRINT(".\Listings\按键控制led流水灯模式.m51")
