@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\A.obj" 
+TO ".\Objects\LED点阵屏显示动画" 
+PRINT(".\Listings\LED点阵屏显示动画.m51")

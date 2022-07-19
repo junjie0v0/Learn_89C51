@@ -1,0 +1,6 @@
+".\Objects\STARTUP.obj",
+".\Objects\A.obj",
+".\Objects\LCD1602.obj",
+".\Objects\main.obj" 
+TO ".\Objects\DS1302可调时钟" 
+PRINT(".\Listings\DS1302可调时钟.m51") DISABLEWARNING (16) 

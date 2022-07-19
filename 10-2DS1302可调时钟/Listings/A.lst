@@ -1,0 +1,208 @@
+C51 COMPILER V9.59.0.0   A                                                                 07/06/2022 09:33:43 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE A
+OBJECT MODULE PLACED IN .\Objects\A.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE A.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\A.lst) OBJ
+                    -ECT(.\Objects\A.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          
+   3          
+   4          void Delay(unsigned int xms)//延时函数；
+   5          {
+   6   1              while(xms--)
+   7   1              {
+   8   2                      unsigned char i, j;
+   9   2      
+  10   2              i = 2;
+  11   2              j = 239;
+  12   2              do
+  13   2              {
+  14   3                      while (--j);
+  15   3              } while (--i);
+  16   2              }
+  17   1      }
+  18          
+  19          
+  20          unsigned char NixieTable[]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+  21          void DT(unsigned char location,number)//数码管的启动；
+  22          {
+  23   1                      switch (location)
+  24   1                      {
+  25   2                              case(1):P2_4=0;P2_3=0;P2_2=0;break;
+  26   2                              case(2):P2_4=0;P2_3=0;P2_2=1;break;
+  27   2                              case(3):P2_4=0;P2_3=1;P2_2=0;break;
+  28   2                              case(4):P2_4=0;P2_3=1;P2_2=1;break;
+  29   2                              case(5):P2_4=1;P2_3=0;P2_2=0;break;
+  30   2                              case(6):P2_4=1;P2_3=0;P2_2=1;break;
+  31   2                              case(7):P2_4=1;P2_3=1;P2_2=0;break;
+  32   2                              case(8):P2_4=1;P2_3=1;P2_2=1;break;
+  33   2                      }
+  34   1                      P0=NixieTable[number];
+  35   1                      Delay(1);//数码管消影;
+  36   1                      P0=0x00;
+  37   1      }
+  38          
+  39          
+  40          /**
+  41            * @brief  获取独立按键键码
+  42            * @param  无
+  43            * @retval 按下按键的键码，范围：0~4，无按键按下时返回值为0
+  44            */
+  45          unsigned char Key()
+  46          {
+  47   1              unsigned char KeyNumber=0;
+  48   1              
+  49   1              if(P3_1==0){Delay(20);while(P3_1==0);Delay(20);KeyNumber=1;}
+  50   1              if(P3_0==0){Delay(20);while(P3_0==0);Delay(20);KeyNumber=2;}
+  51   1              if(P3_2==0){Delay(20);while(P3_2==0);Delay(20);KeyNumber=3;}
+  52   1              if(P3_3==0){Delay(20);while(P3_3==0);Delay(20);KeyNumber=4;}
+  53   1              
+  54   1              return KeyNumber;
+C51 COMPILER V9.59.0.0   A                                                                 07/06/2022 09:33:43 PAGE 2   
+
+  55   1      }
+  56          
+  57          
+  58          
+  59          
+  60          /**
+  61            * @brief  定时器0初始化，1毫秒@12.000MHz
+  62            * @param  无
+  63            * @retval 无
+  64            */
+  65          void Timer0Init(void)
+  66          {
+  67   1              TMOD &= 0xF0;           //设置定时器模式
+  68   1              TMOD |= 0x01;           //设置定时器模式
+  69   1              TL0 = 0x18;             //设置定时初值
+  70   1              TH0 = 0xFC;             //设置定时初值
+  71   1              TF0 = 0;                //清除TF0标志
+  72   1              TR0 = 1;                //定时器0开始计时
+  73   1              ET0=1;
+  74   1              EA=1;
+  75   1              PT0=0;
+  76   1      }
+  77          
+  78          /*定时器中断函数模板
+  79          void Timer0_Routine() interrupt 1
+  80          {
+  81                  static unsigned int T0Count;
+  82                  TL0 = 0x18;             //设置定时初值
+  83                  TH0 = 0xFC;             //设置定时初值
+  84                  T0Count++;
+  85                  if(T0Count>=1000)
+  86                  {
+  87                          T0Count=0;
+  88                          
+  89                  }
+  90          }
+  91          */
+  92          
+  93          
+  94          /**
+  95            * @brief  串口初始化，4800bps@12.000MHz
+  96            * @param  无
+  97            * @retval 无
+  98            */
+  99          void UART_Init()
+ 100          {
+ 101   1              SCON=0x50;
+ 102   1              PCON |= 0x80;
+ 103   1              TMOD &= 0x0F;           //设置定时器模式
+ 104   1              TMOD |= 0x20;           //设置定时器模式
+ 105   1              TL1 = 0xF3;             //设定定时初值
+ 106   1              TH1 = 0xF3;             //设定定时器重装值
+ 107   1              ET1 = 0;                //禁止定时器1中断
+ 108   1              TR1 = 1;                //启动定时器1
+ 109   1              EA=1;                   //启动中断
+ 110   1              ES=1;
+ 111   1      }
+ 112          
+ 113          
+ 114          /**
+ 115            * @brief  串口发送一个字节数据
+ 116            * @param  Byte 要发送的一个字节数据
+C51 COMPILER V9.59.0.0   A                                                                 07/06/2022 09:33:43 PAGE 3   
+
+ 117            * @retval 无
+ 118            */
+ 119          void UART_SendByte(unsigned char Byte)
+ 120          {
+ 121   1              SBUF=Byte;
+ 122   1              while(TI==0);//TI发送中断标志
+ 123   1              TI=0;
+ 124   1      }
+ 125          
+ 126          /*串口中断函数模板
+ 127          void UART_Routine() interrupt 4
+ 128          {
+ 129                  if(RI==1)
+ 130                  {
+ 131                          
+ 132                          RI=0;
+ 133                  }
+ 134          }
+ 135          */
+ 136          
+ 137          
+ 138          
+ 139          
+ 140          //74HC595移位寄存器引脚定义
+ 141          sbit RCK=P3^5;          //RCLK 置1对穿行寄存器的数据进行搬运
+ 142          sbit SCK=P3^6;          //SRCLK 上升沿移位(置1进行移位，移位完进行置0)
+ 143          sbit SER=P3^4;          //SER 串行数据输入移位寄存器
+ 144          
+ 145          #define MATRIX_LED_PORT         P0//点阵屏io口宏定义。
+ 146           
+ 147          
+ 148          /**
+ 149            * @brief  74HC595写入一个字节
+ 150            * @param  Byte 要写入的字节
+ 151            * @retval 无
+ 152            */
+ 153          void _74HC595_WriteByte(unsigned char Byte)
+ 154          {
+ 155   1              unsigned char i;
+ 156   1              for(i=0;i<8;i++)
+ 157   1              {
+ 158   2                      SER=Byte&(0x80>>i);//只要SER不等于0.那就为1；
+ 159   2                      SCK=1;
+ 160   2                      SCK=0;
+ 161   2              }
+ 162   1              RCK=1;
+ 163   1              RCK=0;
+ 164   1      }
+ 165          
+ 166          /**
+ 167            * @brief  LED点阵屏显示一列数据
+ 168            * @param  Column 要选择的列，范围：0~7，0在最左边
+ 169            * @param  Data 选择列显示的数据，高位在上，1为亮，0为灭
+ 170            * @retval 无
+ 171            */
+ 172          void MatrixLED_ShowColumn(unsigned char Column,Data)
+ 173          {
+ 174   1              _74HC595_WriteByte(Data);
+ 175   1              MATRIX_LED_PORT=~(0x80>>Column);//0列为选中
+ 176   1              Delay(1);
+ 177   1              MATRIX_LED_PORT=0xFF;//消影
+ 178   1      }
+C51 COMPILER V9.59.0.0   A                                                                 07/06/2022 09:33:43 PAGE 4   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    348    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

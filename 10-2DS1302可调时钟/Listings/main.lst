@@ -1,0 +1,266 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              07/08/2022 09:03:16 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.ls
+                    -t) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX51.H>
+   2          #include "A.H"
+   3          #include "LCD1602.H"
+   4          
+   5          sbit DS1302_SCLK=P3^6;
+   6          sbit DS1302_CE=P3^5;
+   7          sbit DS1302_IO=P3^4;
+   8          
+   9          //地址的定义
+  10          #define DS1302_Seconds 0x80
+  11          #define DS1302_Minutes 0x82
+  12          #define DS1302_Hour 0x84
+  13          #define DS1302_Date 0x86
+  14          #define DS1302_Month 0x88
+  15          #define DS1302_Week 0x8a
+  16          #define DS1302_Year 0x8c
+  17          #define DS1302_WP 0x8e
+  18          
+  19          char Time[]={55,59,23,5,7,2,22},Mode,KeyNum,TimeSetSelect,TimeSetFlashFlag;
+  20          void DS1302_Init()
+  21          {
+  22   1              DS1302_CE=0;//在读和写时必须将CE信号置为高电平
+  23   1              DS1302_SCLK=0;//SCLK用于同步串行接口上的数据移动。
+  24   1      }
+  25          
+  26          void DS1302_Write(unsigned char Command,date)//秒寄存器的的七位被定义为始终停止(CH)标志
+  27          {
+  28   1              char i;
+  29   1              DS1302_CE=1;
+  30   1              for(i=0;i<8;i++)
+  31   1              {
+  32   2                      DS1302_IO=Command&(0x01<<i);
+  33   2                      DS1302_SCLK=1;
+  34   2                      DS1302_SCLK=0;
+  35   2              }
+  36   1              for(i=0;i<8;i++)
+  37   1              {
+  38   2                      DS1302_IO=date&(0x01<<i);
+  39   2                      DS1302_SCLK=1;
+  40   2                      DS1302_SCLK=0;
+  41   2              }
+  42   1              DS1302_CE=0;
+  43   1              
+  44   1      }
+  45          
+  46          unsigned char DS1302_Read_Time()
+  47                  {
+  48   1              Time[4]=DS1302_Read(0x89);
+*** WARNING C206 IN LINE 48 OF main.c: 'DS1302_Read': missing function-prototype
+*** ERROR C267 IN LINE 48 OF main.c: 'DS1302_Read': requires ANSI-style prototype
+  49   1              Time[3]=DS1302_Read(0x87);
+  50   1              Time[2]=DS1302_Read(0x85);
+  51   1              Time[1]=DS1302_Read(0x83);
+  52   1              Time[0]=DS1302_Read(0x81);
+C51 COMPILER V9.59.0.0   MAIN                                                              07/08/2022 09:03:16 PAGE 2   
+
+  53   1              }
+  54                  
+  55          
+  56          unsigned char DS1302_Read(unsigned char Command)
+  57          {
+*** ERROR C231 IN LINE 57 OF main.c: 'DS1302_Read': redefinition
+  58   1              unsigned char i,Data=0x00;
+  59   1              Command|=0x01;  //将指令转换为读指令
+  60   1              DS1302_CE=1;
+  61   1              for(i=0;i<8;i++)
+  62   1              {
+  63   2                      DS1302_IO=Command&(0x01<<i);
+  64   2                      DS1302_SCLK=0;
+  65   2                      DS1302_SCLK=1;
+  66   2              }
+  67   1              for(i=0;i<8;i++)
+  68   1              { 
+  69   2                      DS1302_SCLK=1;
+  70   2                      DS1302_SCLK=0;
+  71   2                      if(DS1302_IO){Data|=(0x01<<i);}
+  72   2              }
+  73   1              DS1302_CE=0;
+  74   1              DS1302_IO=0;    //读取后将IO设置为0，否则读出的数据会出错
+  75   1              return (Data/16*10+Data%16);
+  76   1      }
+*** ERROR C231 IN LINE 76 OF main.c: 'DS1302_Read': redefinition
+  77          
+  78          void DS1302_SetTime(void)
+  79          {
+  80   1              DS1302_Write(DS1302_Seconds,Time[0]/10*6+Time[0]);
+  81   1              DS1302_Write(DS1302_Minutes,Time[1]/10*6+Time[1]);
+  82   1              DS1302_Write(DS1302_Hour,Time[2]/10*6+Time[2]);
+  83   1              DS1302_Write(DS1302_Date,Time[3]/10*6+Time[3]);
+  84   1              DS1302_Write(DS1302_Month,Time[4]/10*6+Time[4]);
+  85   1              DS1302_Write(DS1302_Week,Time[5]/10*6+Time[5]);
+  86   1              DS1302_Write(DS1302_Year,Time[6]/10*6+Time[6]);
+  87   1              DS1302_Write(DS1302_WP,Time[7]/10*6+Time[7]);
+  88   1      }
+  89          
+  90          void TimeShow()
+  91          {
+  92   1              LCD_ShowString(1,1,"Time");
+  93   1              LCD_ShowNum(1,15,Mode,2);
+  94   1              LCD_ShowNum(2,1,Time[4],2);
+  95   1              LCD_ShowNum(2,4,Time[3],2);
+  96   1              LCD_ShowNum(2,7,Time[2],2);
+  97   1              LCD_ShowNum(2,10,Time[1],2);
+  98   1              LCD_ShowNum(2,13,Time[0],2);
+  99   1      }
+ 100          
+ 101          void TimeSet()
+ 102          {
+ 103   1              if(KeyNum==2)
+ 104   1              {
+ 105   2              TimeSetSelect++;
+ 106   2              TimeSetSelect%=6;
+ 107   2              }
+ 108   1              if(KeyNum==3)           //如果按键2被按下则时间++；
+ 109   1              {
+ 110   2                      Time[TimeSetSelect]++;
+*** ERROR C187 IN LINE 110 OF main.c: not an lvalue
+ 111   2                      if(TimeSetSelect==0)                            //秒
+C51 COMPILER V9.59.0.0   MAIN                                                              07/08/2022 09:03:16 PAGE 3   
+
+ 112   2                              Time[TimeSetSelect]%=60;
+ 113   2                      else if(TimeSetSelect==1)                       //分
+ 114   2                              Time[TimeSetSelect]%=60;
+ 115   2                      else if(TimeSetSelect==2)                       //时
+ 116   2                              Time[TimeSetSelect]%=24;
+ 117   2                      else if(TimeSetSelect==3)                       //日
+ 118   2                      {
+ 119   3                              if(Time[6]%4==0 && Time[4]==2)//闰年并且是二月
+ 120   3                              {
+ 121   4                                      Time[TimeSetSelect]%=30;
+ 122   4                              }
+ 123   3                              switch(Time[4])
+ 124   3                                      {
+ 125   4                                      case 1:
+ 126   4                                      case 3:
+ 127   4                                      case 5:
+ 128   4                                      case 7:
+ 129   4                                      case 8:
+ 130   4                                      case 10:
+ 131   4                                      case 12:Time[TimeSetSelect]%=32;break;
+ 132   4                                      case 2:Time[TimeSetSelect]%=29;break;
+ 133   4                                      default:Time[TimeSetSelect]%=31;break;
+ 134   4                                      }
+ 135   3                      }
+ 136   2                              
+ 137   2                      else if(TimeSetSelect==4)       //月
+ 138   2                              if(Time[TimeSetSelect]>12)
+ 139   2                                      Time[TimeSetSelect]=1;
+ 140   2                      
+ 141   2                      else if(TimeSetSelect==6)       //星期
+ 142   2                              Time[TimeSetSelect]%=8;
+ 143   2                      else if(TimeSetSelect==5)       //年   
+ 144   2                              Time[TimeSetSelect]%=99;
+ 145   2              }
+ 146   1              
+ 147   1              
+ 148   1              
+ 149   1              if(KeyNum==3)           //如果按键3被按下则时间--；
+ 150   1              {
+ 151   2                      Time[TimeSetSelect]--;
+*** ERROR C187 IN LINE 151 OF main.c: not an lvalue
+ 152   2                      if(TimeSetSelect==0 && Time[TimeSetSelect]<0)                           //秒
+ 153   2                              Time[TimeSetSelect]=59;
+ 154   2                      else if(TimeSetSelect==1 && Time[TimeSetSelect]<0)                      //分
+ 155   2                              Time[TimeSetSelect]=59;
+ 156   2                      else if(TimeSetSelect==2 && Time[TimeSetSelect]<0)                      //时
+ 157   2                              Time[TimeSetSelect]=23;
+ 158   2                      else if(TimeSetSelect==1 && Time[TimeSetSelect]<1)                      //日
+ 159   2                      {
+ 160   3                              if(Time[6]%4==0 && Time[4]==2  && Time[TimeSetSelect]<1)//闰年并且是二月
+ 161   3                              {
+ 162   4                                      Time[TimeSetSelect]=29;
+ 163   4                              }
+ 164   3                              switch(Time[4])
+ 165   3                                      {
+ 166   4                                      case 1:
+ 167   4                                      case 3:
+ 168   4                                      case 5:
+ 169   4                                      case 7:
+ 170   4                                      case 8:
+ 171   4                                      case 10:
+ 172   4                                      case 12:Time[TimeSetSelect]=31;break;
+C51 COMPILER V9.59.0.0   MAIN                                                              07/08/2022 09:03:16 PAGE 4   
+
+ 173   4                                      case 2:Time[TimeSetSelect]=28;break;
+ 174   4                                      default:Time[TimeSetSelect]=30;break;
+ 175   4                                      }
+ 176   3                      }
+ 177   2                              
+ 178   2                      else if(TimeSetSelect==4 && Time[TimeSetSelect]<0)      //月
+ 179   2                                      Time[TimeSetSelect]=12;
+ 180   2                      
+ 181   2                      else if(TimeSetSelect==6 && Time[TimeSetSelect]<0)      //星期
+ 182   2                              Time[TimeSetSelect]=7;
+ 183   2                      else if(TimeSetSelect==5 && Time[TimeSetSelect]<0)      //年   
+ 184   2                              Time[TimeSetSelect]=99;
+ 185   2              }
+ 186   1              
+ 187   1              
+ 188   1              //Mode=1时时间设置位闪烁
+ 189   1      //      if(TimeSetSelect==0 && TimeSetFlashFlag==0){LCD_ShowString(2,1,"  ");}
+ 190   1      //      else{{LCD_ShowNum(2,1,Time[4],2);}}
+ 191   1      //      if(TimeSetSelect==1 && TimeSetFlashFlag==0){LCD_ShowString(2,4,"  ");}
+ 192   1      //      else{{LCD_ShowNum(2,1,Time[3],2);}}
+ 193   1      //      if(TimeSetSelect==1 && TimeSetFlashFlag==0){LCD_ShowString(2,7,"  ");}
+ 194   1      //      else{{LCD_ShowNum(2,1,Time[2],2);}}
+ 195   1      //      if(TimeSetSelect==1 && TimeSetFlashFlag==0){LCD_ShowString(2,10,"  ");}
+ 196   1      //      else{{LCD_ShowNum(2,1,Time[1],2);}}
+ 197   1      //      if(TimeSetSelect==1 && TimeSetFlashFlag==0){LCD_ShowString(2,13,"  ");}
+ 198   1      //      else{{LCD_ShowNum(2,1,Time[0],2);}}
+ 199   1      
+ 200   1              
+ 201   1              
+ 202   1      }
+ 203          
+ 204          void main()
+ 205          {
+ 206   1              LCD_Init();
+ 207   1              DS1302_Init();
+ 208   1              DS1302_SetTime();
+ 209   1              while(1)
+ 210   1              {
+ 211   2                      KeyNum=Key();
+ 212   2                      if(KeyNum==1)
+ 213   2                              {
+ 214   3                                      if(Mode==0){Mode=1;TimeSetSelect=0;}//设置按键模式1为设置模式和显示模式互换  2时间
+             -+1  3时间-1
+ 215   3                                      else if(Mode==1){Mode=0;DS1302_SetTime();}
+ 216   3                              }
+ 217   2                      switch(Mode)
+ 218   2                      {
+ 219   3                              case 0:TimeShow();break;
+ 220   3                              case 1:TimeSet();break;
+ 221   3                      }
+ 222   2                      TimeShow();
+ 223   2              }
+ 224   1      }
+ 225          
+ 226          
+ 227          
+ 228          void Timer0_Routine() interrupt 1
+ 229          {
+ 230   1              static unsigned int T0Count;
+ 231   1              TL0 = 0x18;             //设置定时初值
+ 232   1              TH0 = 0xFC;             //设置定时初值
+ 233   1              T0Count++;
+C51 COMPILER V9.59.0.0   MAIN                                                              07/08/2022 09:03:16 PAGE 5   
+
+ 234   1              if(T0Count>=500)
+ 235   1              {
+ 236   2                      T0Count=0;
+ 237   2                      TimeSetFlashFlag=!TimeSetFlashFlag;
+ 238   2              }
+ 239   1      }
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  5 ERROR(S)
