@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\A.obj" 
+TO ".\Objects\ทไร๙ฦ๗ฒฅทลา๔ภึ" 
+PRINT(".\Listings\ทไร๙ฦ๗ฒฅทลา๔ภึ.m51") DISABLEWARNING (16) 

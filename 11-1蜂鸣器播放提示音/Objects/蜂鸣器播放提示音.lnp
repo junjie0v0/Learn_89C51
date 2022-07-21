@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\A.obj" 
+TO ".\Objects\蜂鸣器播放提示音" 
+PRINT(".\Listings\蜂鸣器播放提示音.m51") DISABLEWARNING (16) 
